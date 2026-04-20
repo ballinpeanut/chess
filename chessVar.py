@@ -231,6 +231,10 @@ class Piece:
     def get_symbol(self):
         """Returns ASCII symbol for the Piece"""
         return self._symbol
+    
+    def get_type(self):
+        """Returns piece type, ex: king, queen, etc."""
+        return type(self).__name__.lower()
 
     def valid_move(self, move_from, move_to, chessboard):
         """
