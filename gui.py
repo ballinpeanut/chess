@@ -58,7 +58,7 @@ def draw_highlight(screen, selected_square):
     
     pygame.draw.rect(screen, color, (x, y, SQUARE_SIZE, SQUARE_SIZE))
     
-def game_status(screen, game):
+def game_status(screen, game, invalid_move):
     font = pygame.font.SysFont(None, 40)
     text_color = (255, 255, 255)
     
@@ -67,6 +67,8 @@ def game_status(screen, game):
             text = font.render("WHITE WON. Game over!", True, text_color)
         else:
             text = font.render("BLACK WON. Game over!", True, text_color)
+    elif invalid_move == True:
+            text = font.render(f"{game.get_turn()}: Invalid move. Try again.", True, text_color)
     else:
         text = font.render(f"{game.get_turn().capitalize()}'s turn", True, text_color)
     
@@ -90,6 +92,7 @@ images = load_images()
 # game.make_move('e2', 'e4')
 
 selected_square = None
+invalid_move = False
 
 while True:
     screen.fill((0,0,0))
@@ -108,13 +111,16 @@ while True:
             if selected_square is None:
                 selected_square = square
             else:
-                game.make_move(selected_square, square)
+                if not game.make_move(selected_square, square):
+                    invalid_move = True
+                else:
+                    invalid_move = False
                 selected_square = None
         
     draw_board(screen)
     if selected_square is not None:
         draw_highlight(screen, selected_square)
     draw_pieces(screen, images, game._chessboard)
-    game_status(screen, game)
+    game_status(screen, game, invalid_move)
     pygame.display.flip()
         
