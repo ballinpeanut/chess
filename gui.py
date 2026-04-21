@@ -46,6 +46,19 @@ def draw_pieces(screen, images, board):
             y = row_ind * SQUARE_SIZE
             
             screen.blit(image, (x, y))
+            
+def draw_highlight(screen, selected_square):
+    col_ind = ord(selected_square[0]) - ord('a')
+    row_ind = 8 - int(selected_square[1])
+    
+    x = col_ind * SQUARE_SIZE
+    y = row_ind * SQUARE_SIZE
+    
+    color = (255, 255, 0)
+    
+    pygame.draw.rect(screen, color, (x, y, SQUARE_SIZE, SQUARE_SIZE))
+    
+    
     
 
 # run game
@@ -59,13 +72,32 @@ images = load_images()
 # test
 # print(game._chessboard['e1'].get_type())
 # print(game._chessboard['e1'].get_color())
+# game.make_move('e2', 'e4')
+
+selected_square = None
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = pygame.mouse.get_pos()
+            col = x // SQUARE_SIZE
+            row = y // SQUARE_SIZE
+            
+            col_letter = chr(col + ord('a'))
+            row_number = 8 - row
+            square = col_letter + str(row_number)
+            
+            if selected_square is None:
+                selected_square = square
+            else:
+                game.make_move(selected_square, square)
+                selected_square = None
         
     draw_board(screen)
+    if selected_square is not None:
+        draw_highlight(screen, selected_square)
     draw_pieces(screen, images, game._chessboard)
     pygame.display.flip()
         
