@@ -58,13 +58,28 @@ def draw_highlight(screen, selected_square):
     
     pygame.draw.rect(screen, color, (x, y, SQUARE_SIZE, SQUARE_SIZE))
     
+def game_status(screen, game):
+    font = pygame.font.SysFont(None, 40)
+    text_color = (255, 255, 255)
+    
+    if game.get_game_state() != "UNFINISHED":
+        if game.get_game_state() == "WHITE_WON":
+            text = font.render("WHITE WON. Game over!", True, text_color)
+        else:
+            text = font.render("BLACK WON. Game over!", True, text_color)
+    else:
+        text = font.render(f"{game.get_turn().capitalize()}'s turn", True, text_color)
+    
+    screen.blit(text, (10, HEIGHT + 10))
+    
+    
     
     
 
 # run game
 game = ChessVar()
 pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((WIDTH, HEIGHT + 60))
 pygame.display.set_caption("Chess")
 
 images = load_images()
@@ -77,6 +92,7 @@ images = load_images()
 selected_square = None
 
 while True:
+    screen.fill((0,0,0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -99,5 +115,6 @@ while True:
     if selected_square is not None:
         draw_highlight(screen, selected_square)
     draw_pieces(screen, images, game._chessboard)
+    game_status(screen, game)
     pygame.display.flip()
         
